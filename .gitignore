@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+env/
+ENV/
+techcrunch_venv/
+
+# IDE files
+.vscode/
+.idea/
+
+# Output files
+output/
+local_settings.py
+scraper.log
+# Miscellaneous
+.DS_Store

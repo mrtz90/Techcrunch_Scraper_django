@@ -30,7 +30,7 @@ class KeyWordSearched(models.Model):
 
 class Article(models.Model):
     title = models.CharField(max_length=150)
-    sub_title = models.TextField()
+    summary = models.TextField()
     author = models.ManyToManyField(
         Author,
         related_name='author',
@@ -42,17 +42,19 @@ class Article(models.Model):
         verbose_name='Category',
         on_delete=models.PROTECT,
     )
-    created_at = models.DateTimeField()
+    content = models.TextField()
+    article_created_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
 
 
 class DailySearchResult(models.Model):
-    keyword = models.ForeignKey(
-        KeyWordSearched,
-        related_name='keyword',
-        verbose_name='Keyword',
+    category = models.ForeignKey(
+        Category,
+        related_name='category',
+        verbose_name='Category',
         on_delete=models.PROTECT,
     )
     article = models.ForeignKey(

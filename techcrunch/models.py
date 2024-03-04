@@ -53,7 +53,7 @@ class Article(models.Model):
 class DailySearchResult(models.Model):
     category = models.ForeignKey(
         Category,
-        related_name='category',
+        related_name='categories',
         verbose_name='Category',
         on_delete=models.PROTECT,
     )
@@ -73,7 +73,7 @@ class DailySearchResult(models.Model):
 class UserSearchResult(models.Model):
     keyword = models.ForeignKey(
         KeyWordSearched,
-        related_name='keyword',
+        related_name='keywords',
         verbose_name='Keyword',
         on_delete=models.PROTECT,
     )

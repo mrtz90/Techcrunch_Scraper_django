@@ -29,7 +29,7 @@ class KeyWordSearched(models.Model):
 
 
 class Article(models.Model):
-    title = models.CharField(max_length=150)
+    title = models.CharField(max_length=150, unique=True)
     summary = models.TextField()
     author = models.ManyToManyField(
         Author,
@@ -44,7 +44,8 @@ class Article(models.Model):
     )
     content = models.TextField()
     article_created_at = models.DateTimeField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField()
+    image_path = models.FilePathField()
 
     def __str__(self):
         return self.title

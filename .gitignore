@@ -20,3 +20,7 @@ local_settings.py
 scraper.log
 # Miscellaneous
 .DS_Store
+media/
+celerybeat-schedule.bak
+celerybeat-schedule.dat
+celerybeat-schedule.dir

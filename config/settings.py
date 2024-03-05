@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import os
 
 from pathlib import Path
 
@@ -33,7 +34,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # third part apps
-
+    'import_export',
+    'django_celery_results',
     # local apps
     'scraper',
     'techcrunch',
@@ -114,3 +116,17 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/media/"
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = '/static/'
+
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_TASK_TIME_LIMIT = 30  # Task time limit in seconds
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_MESSAGE_COMPRESSION = 'gzip'

@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from datetime import datetime
 import traceback
+import shutil
 
 from celery import shared_task, Celery
 from celery.schedules import crontab
@@ -21,7 +22,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 
 from techcrunch.models import Author, Article, Category, DailySearchResult, UserSearchResult, KeyWordSearched
-# from techcrunch.resources import export_data
+from techcrunch.resources import export_article
 from .forms import ScrapForm
 
 headers = {
@@ -56,6 +57,8 @@ def scrape_form(request):
                                        )
             os.makedirs(folder_path, exist_ok=True)
             scrape_articles(links, created, folder_path, keyword_searched, type_search='user')
+            export_article(export_format, folder_path, created)
+            zip_output_folder(folder_path)
         return HttpResponse("Scraping completed successfully!")
     else:
         form = ScrapForm()
@@ -71,6 +74,8 @@ def start_techcrunch_daily_scrape():
                                )
     os.makedirs(folder_path, exist_ok=True)
     scrape_articles(links, created, folder_path, keyword_searched='None', type_search='daily')
+    export_article('csv', folder_path, created)
+    zip_output_folder(folder_path)
 
 
 @app.task
@@ -323,3 +328,15 @@ def download_images(self, image_urls, folder_path):
         return saved_image_paths[0]
     else:
         'no_image'
+
+
+def zip_output_folder(output_folder):
+    """
+    Zip the output folder containing the generated reports.
+    """
+    zip_filename = output_folder.split('\\')[-1]
+    print(output_folder)
+    print(zip_filename)
+    shutil.make_archive(zip_filename, 'zip', base_dir=zip_filename, root_dir='media\\')
+    shutil.move(f'{zip_filename}.zip', f'media\\{zip_filename}.zip')
+    return f'output\\{zip_filename}'

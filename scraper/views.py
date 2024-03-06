@@ -7,10 +7,8 @@ import traceback
 import shutil
 
 from celery import shared_task, Celery
-from celery.schedules import crontab
 from django.conf import settings
 from requests.exceptions import ConnectionError, Timeout
-from django.core.management import call_command
 from bs4 import BeautifulSoup
 import requests
 from django.utils.dateparse import parse_date
@@ -87,7 +85,7 @@ def techcrunch_scrape_by_category():
         'privacy', 'robotics', 'startups', 'transportation', 'venture'
     ]
     article_data = []
-    for cat in categories[:1]:
+    for cat in categories[1:5]:
         url = f'https://techcrunch.com/category/{cat}/'  # URL of the TechCrunch Apps page
 
         # Set up Selenium WebDriver
@@ -130,7 +128,7 @@ def techcrunch_scrape_by_category():
 
                 # Check the date of the last article extracted
                 last_article_date = datetime.strptime(article_data[-1]['article_date'], '%Y-%m-%dT%H:%M:%S')
-                if last_article_date < datetime(2024, 2, 1):
+                if last_article_date < datetime(2024, 2, 20):
                     break  # Stop scraping if the date is before 2024-02-01
 
         except Exception as e:
@@ -179,7 +177,8 @@ def search_keyword(keyword, from_page, to_page):
 
 @app.task
 def scrape_articles(articles, created, folder_path, keyword_searched, type_search):
-    for article in articles[120:130]:
+    print(1)
+    for article in articles[:200]:
         print(article)
         if type_search == 'daily':
             url = 'https://www.techcrunch.com' + article['article_url']
@@ -224,7 +223,7 @@ def scrape_articles(articles, created, folder_path, keyword_searched, type_searc
             print(article_created_at)
             # tags = [tag.text.strip() for tag in soup.find('div', class_='article__tags').find_all('li')]
             # print(tags, '\n')
-
+            save_html(response, title, folder_path)
             image_path = download_images(images, folder_path)
             # Fetch or create authors
             authors = [Author.objects.get_or_create(name=name)[0] for name in authors]
@@ -290,6 +289,9 @@ def extract_article_url(redirect_url):
 
 @shared_task(bind=True, max_retries=3, default_retry_delay=10)
 def download_images(self, image_urls, folder_path):
+    folder_path = os.path.join(folder_path, 'images')
+    # Create the directory if it doesn't exist
+    os.makedirs(folder_path, exist_ok=True)
     saved_image_paths = []
     for image_url in image_urls:
         try:
@@ -307,7 +309,7 @@ def download_images(self, image_urls, folder_path):
 
                 # Define the file path where the image will be saved
                 file_path = os.path.join(folder_path, file_name)
-
+                print(file_path)
                 # Save the image to the file path
                 with open(file_path, 'wb') as f:
                     f.write(response.content)
@@ -328,6 +330,22 @@ def download_images(self, image_urls, folder_path):
         return saved_image_paths[0]
     else:
         'no_image'
+
+
+def save_html(response, title, folder_path):
+    try:
+        folder_path = os.path.join(folder_path, 'htmls')
+        # Create the directory if it doesn't exist
+        os.makedirs(folder_path, exist_ok=True)
+        file_name = title.replace(" ", "_")
+        # Define the file path where the image will be saved
+        file_path = os.path.join(folder_path, f'{file_name}.html')
+
+        # Save the html to the file path
+        with open(file_path, 'wb') as f:
+            f.write(response.content)
+    except Exception as e:
+        print(e)
 
 
 def zip_output_folder(output_folder):

@@ -21,8 +21,7 @@ class ArticleResource(ModelResource):
     class Meta:
         model = Article
         fields = (
-            'id', 'title', 'author', 'summary', 'content', 'category', 'pages', 'topic',
-            'about_book', 'book_file_path', 'image_file_path'
+            'id', 'title', 'author', 'summary', 'content', 'category',
         )
 
 

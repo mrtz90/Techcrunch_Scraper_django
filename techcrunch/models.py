@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.html import format_html
 
 
 class Author(models.Model):
@@ -49,6 +50,18 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+
+    def image_html_tag(self):
+        image_tag = format_html("")
+        if self.image_path:
+            image_tag = format_html('<a href={} target="_blank"><img src="{}" alt="{}" height={} width={}/></a>'.format(
+                self.image_path,
+                self.image_path,
+                self.title,
+                64,
+                64,
+            ), )
+        return image_tag
 
 
 class DailySearchResult(models.Model):

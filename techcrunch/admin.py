@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from import_export.resources import ModelResource
 from import_export.admin import ExportMixin
 
 from .models import Author, Article, Category, DailySearchResult, UserSearchResult, KeyWordSearched
@@ -9,7 +8,7 @@ from .models import Author, Article, Category, DailySearchResult, UserSearchResu
 @admin.register(Article)
 class ArticleAdmin(ExportMixin, admin.ModelAdmin):
     list_display = [
-        'id', 'title', 'display_authors', 'summary', 'category',
+        'id', 'image_html_tag', 'title', 'display_authors', 'summary', 'category',
         'content', 'article_created_at', 'image_path'
     ]
     list_display_links = ['id', 'title']

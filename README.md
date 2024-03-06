@@ -25,7 +25,7 @@ python manage.py migrate
 #### Manual Scraping
 #### Access the scraping form at /scrape-form.
 #### Enter the keyword, start page, end page, and export format.
-####Submit the form to initiate the scraping process.
+#### Submit the form to initiate the scraping process.
 #### Automated Daily Scraping
 ## Start Celery worker:
 ```dash

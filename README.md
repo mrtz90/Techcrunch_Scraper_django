@@ -29,11 +29,11 @@ python manage.py migrate
 #### Automated Daily Scraping
 ## Start Celery worker:
 ```dash
-celery -A scraper worker --loglevel=info
+celery -A config worker --loglevel=info
 ```
 ## Start Celery Beat for task scheduling:
 ```dash
-celery -A scraper beat --loglevel=info
+celery -A config beat --loglevel=info
 ```
 ## Task Definitions
 ##### scrape_form: View function to handle manual scraping form submission.

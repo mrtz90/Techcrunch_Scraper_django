@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     # third part apps
     'import_export',
     'django_celery_results',
+
     # local apps
     'scraper',
     'techcrunch',
@@ -130,3 +131,4 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_TASK_TIME_LIMIT = 30  # Task time limit in seconds
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_MESSAGE_COMPRESSION = 'gzip'
+CELERY_TIMEZONE = 'Asia/Tehran'

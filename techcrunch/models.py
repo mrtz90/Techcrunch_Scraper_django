@@ -2,34 +2,36 @@ from django.db import models
 from django.utils.html import format_html
 
 
-class Author(models.Model):
-    name = models.CharField(max_length=55, unique=True, verbose_name='Author Name')
+class BaseModel(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = True
+
+
+class Author(BaseModel):
+    name = models.CharField(max_length=55, unique=True, verbose_name='Author Name')
 
     def __str__(self):
         return self.name
 
 
-class Category(models.Model):
+class Category(BaseModel):
     title = models.CharField(max_length=55, verbose_name='Category title')
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
 
 
-class KeyWordSearched(models.Model):
+class KeyWordSearched(BaseModel):
     keyword = models.CharField(max_length=100, verbose_name='Keyword Searched')
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.keyword
 
 
-class Article(models.Model):
+class Article(BaseModel):
     title = models.CharField(max_length=150, unique=True)
     summary = models.TextField()
     author = models.ManyToManyField(
@@ -45,7 +47,6 @@ class Article(models.Model):
     )
     content = models.TextField()
     article_created_at = models.DateTimeField()
-    created_at = models.DateTimeField()
     image_path = models.FilePathField()
 
     def __str__(self):
@@ -54,17 +55,18 @@ class Article(models.Model):
     def image_html_tag(self):
         image_tag = format_html("")
         if self.image_path:
-            image_tag = format_html('<a href={} target="_blank"><img src="{}" alt="{}" height={} width={}/></a>'.format(
-                self.image_path,
-                self.image_path,
-                self.title,
-                64,
-                64,
-            ), )
+            image_tag = format_html(
+                '<a href={} target="_blank"><img src="{}" alt="{}" height={} width={}/></a>'.format(
+                    self.image_path,
+                    self.image_path,
+                    self.title,
+                    64,
+                    64,
+                ), )
         return image_tag
 
 
-class DailySearchResult(models.Model):
+class DailySearchResult(BaseModel):
     category = models.ForeignKey(
         Category,
         related_name='categories',
@@ -77,14 +79,12 @@ class DailySearchResult(models.Model):
         verbose_name='Article',
         on_delete=models.PROTECT,
     )
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.article
 
 
-class UserSearchResult(models.Model):
+class UserSearchResult(BaseModel):
     keyword = models.ForeignKey(
         KeyWordSearched,
         related_name='keywords',
@@ -97,8 +97,6 @@ class UserSearchResult(models.Model):
         verbose_name='Article',
         on_delete=models.PROTECT,
     )
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.article

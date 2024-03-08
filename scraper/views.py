@@ -8,7 +8,7 @@ from django.conf import settings
 
 from .forms import ScrapForm
 from .tasks import scrape_articles, search_keyword
-from techcrunch.models import KeyWordSearched
+
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ def scrape_form(request):
             type_search = 'user'
             os.makedirs(folder_path, exist_ok=True)
 
-            result = scrape_articles(
+            result = scrape_articles.delay(
                 links, created, folder_path,
                 export_format, type_search, keyword)
             print(result.status)

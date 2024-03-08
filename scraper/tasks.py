@@ -1,15 +1,12 @@
 import os
 import re
-from django.shortcuts import render
-from django.http import HttpResponse
 from datetime import datetime
 import traceback
 import shutil
 import logging
 
-from celery import shared_task, Celery
+from celery import shared_task
 from django.conf import settings
-from requests.exceptions import ConnectionError, Timeout
 from bs4 import BeautifulSoup
 import requests
 from django.utils.dateparse import parse_date
@@ -22,7 +19,6 @@ from selenium.webdriver.chrome.options import Options
 
 from techcrunch.models import Author, Article, Category, DailySearchResult, UserSearchResult, KeyWordSearched
 from techcrunch.resources import export_article
-
 
 logger = logging.getLogger(__name__)
 
@@ -164,6 +160,7 @@ def scrape_articles(articles, created, folder_path, export_format, type_search, 
                 parsed_date = datetime.now()
 
             article['article_date'] = parsed_date.strftime("%Y-%m-%d %H:%M")
+
         try:
             response = requests.get(url, headers=headers)
             soup = BeautifulSoup(response.content, 'html.parser')
@@ -213,13 +210,18 @@ def scrape_articles(articles, created, folder_path, export_format, type_search, 
             else:
                 UserSearchResult.objects.create(keyword=keyword_searched, article=article)
             print(f"Article '{title}' saved successfully!")
-            export_article(export_format, folder_path, created)
-            zip_output_folder(folder_path)
-            return "morteza ahmadi"
 
         except Exception as e:
             logger.error(f"Error in scrape_articles task: {e}", exc_info=True)
             print(f"Error fetching data from {url}: {e}")
+
+    try:
+        export_article(export_format, folder_path, created)
+        zip_output_folder(folder_path)
+
+        return "morteza ahmadi"
+    except Exception as e:
+        print(e)
 
 
 def extract_article_url(redirect_url):

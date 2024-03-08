@@ -9,7 +9,7 @@ from .models import Author, Article, Category, DailySearchResult, UserSearchResu
 class ArticleAdmin(ExportMixin, admin.ModelAdmin):
     list_display = [
         'id', 'image_html_tag', 'title', 'display_authors', 'summary', 'category',
-        'content', 'article_created_at', 'image_path'
+        'keyword', 'article_created_at', 'image_path'
     ]
     list_display_links = ['id', 'title']
     list_filter = ['title', 'author', 'category']

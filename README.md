@@ -31,6 +31,10 @@ python manage.py migrate
 ```dash
 celery -A config worker --loglevel=info
 ```
+or
+```dash
+celery -A config worker -l INFO -P eventlet
+```
 ## Start Celery Beat for task scheduling:
 ```dash
 celery -A config beat --loglevel=info

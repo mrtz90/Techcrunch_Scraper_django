@@ -33,13 +33,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # third part apps
-    'import_export',
+    # trusted apps:
     'django_celery_results',
+    'django_celery_beat',
 
-    # local apps
+    # local apps:
     'scraper',
     'techcrunch',
+
+    # third part apps:
+    'import_export',
 ]
 
 MIDDLEWARE = [
